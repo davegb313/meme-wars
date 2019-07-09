@@ -21,7 +21,7 @@ connection.authenticate()
   .catch((err)=> console.log(err));
 
 app.get('/hydrate', (req, res)=> {
-  const passwordHash = crypto.pbfd2Sync('guest', 'secret code', 100, 64, 'sha512')
+  const passwordHash = crypto.pbkdf2Sync('guest', 'secret code', 100, 64, 'sha512')
                              .toString('hex');
   let users = [
               { name: 'nik', passwordHash },
