@@ -7,7 +7,7 @@ module.exports = (app, { User, Meme, Vote })=>{
   app.post('/user', (req, res)=>{
     let user = {
       name: req.body.name,
-      passwordHash: crypto.pbkdf2Sync(req.body.password, 'salt', 100, 64, 'sha512')
+      passwordHash: crypto.pbkdf2Sync(req.body.password, 'secret code', 100, 64, 'sha512')
                           .toString('hex'),
     };
 
@@ -20,7 +20,7 @@ module.exports = (app, { User, Meme, Vote })=>{
 
   app.post('/login', (req, res)=> {
     const passwordAttemptHash = crypto
-      .pbkdf2Sync(req.body.password, 'salt', 100, 64, 'sha512')
+      .pbkdf2Sync(req.body.password, 'secret code', 100, 64, 'sha512')
       .toString('hex');
 
     User.findOne({ where: { name: req.body.name }})
