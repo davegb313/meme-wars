@@ -60,7 +60,10 @@ class Vote extends React.Component {
   componentDidMount(){
     console.log('Vote mount');
 
-    fetch('/meme', { headers: { 'Content-Type': 'application/json' }})
+    fetch('/meme', { headers: {
+      'Content-Type': 'application/json'
+      'Authorization': 'Bearer '+localStorage.token,
+    }})
       .then(response => response.json())
       .then(memes => this.setState({ memes, firstImg: 0, secondImg: 1 }) );
   }
