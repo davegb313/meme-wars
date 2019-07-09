@@ -1,9 +1,8 @@
 import React from 'react';
-import './Login.css';
 import { Redirect } from 'react-router-dom';
+import './Login.css';
 
 class Login extends React.Component {
-
   state = {
     username: '',
     password: '',
@@ -16,9 +15,23 @@ class Login extends React.Component {
   setPassword = (event)=>
     this.setState({ password: event.target.value })
 
-  login = ()=> {
-    console.log('Pretend to check password');
-    this.setState({ toVote: true });
+  login = (url)=> {
+    fetch('/'+url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: this.state.username,
+                             password: this.state.password }),
+    }).then(response => response.status < 300 ?
+                                          response.json() :
+                                          response.json()
+                                                  .then(err => Promise.reject(err)))
+      .then(jsonResponse => {
+        console.log('response from create user', jsonResponse);
+
+        localStorage.token = jsonResponse.token;
+        this.setState({ toVote: true });
+      })
+      .catch(err => console.error('create user failed with', err));
   }
 
   componentDidMount(){
@@ -30,21 +43,24 @@ class Login extends React.Component {
   }
 
   render(){
-
-    if (this.state.toVote) return (<Redirect to='/vote'/>)
+    if( this.state.toVote ) return (<Redirect to='/vote'/>);
 
     return (
       <div className='Login Page'>
-        <div className="loginBox">
+        <div className='login-box'>
           <label>
             <span>Username</span>
-            <input value={this.setState.username} onChange={this.setUsername}/>
+            <input value={this.state.username}
+                   onChange={this.setUsername}/>
           </label>
           <label>
             <span>Password</span>
-            <input type="password" value={this.state.password} onChange={this.setPassword}/>
+            <input type='password'
+                   value={this.state.password}
+                   onChange={this.setPassword}/>
           </label>
-            <button onClick={this.login}>Login</button>
+          <button onClick={()=> this.login('login')}>Login</button>
+          <button onClick={()=> this.login('user')}>Signup</button>
         </div>
       </div>
     );

@@ -10,8 +10,19 @@ class Meme extends React.Component {
     this.setState({ imgUrl: event.target.value })
 
   upload = ()=>{
-    console.log('crate meme', this.state.imgUrl);
-    this.setState({ imgUrl: '' })
+    fetch('/meme', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer '+localStorage.token,
+      },
+      body: JSON.stringify({
+        imgUrl: this.state.imgUrl,
+      }),
+    }).then(response=> response.status < 300 ?
+                                         this.setState({ imgUrl: '' }) :
+                                         console.error('upload failed')
+    )
   }
 
   componentDidMount(){
@@ -25,10 +36,11 @@ class Meme extends React.Component {
   render(){
     return (
       <div className='Meme Page'>
-        <div className='memeBox'>
+        <div className='meme-box'>
           <label>
             <span>Url to Upload</span>
-            <input value={this.state.imgUrl} onChange={this.setImgUrl}/>
+            <input value={this.state.imgUrl}
+                   onChange={this.setImgUrl}/>
           </label>
           <button onClick={this.upload}>Upload</button>
           <img src={this.state.imgUrl}/>

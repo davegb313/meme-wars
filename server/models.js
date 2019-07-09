@@ -1,5 +1,4 @@
 module.exports = (connection, ORM)=> {
-
   const User = connection.define('user', {
     id: {
       type: ORM.INTEGER,
@@ -10,6 +9,10 @@ module.exports = (connection, ORM)=> {
       type: ORM.TEXT,
       allowNull: false,
       unique: true,
+    },
+    passwordHash: {
+      type: ORM.TEXT,
+      allowNull: false,
     },
   }, { freezeTableName: true });
 
@@ -43,11 +46,19 @@ module.exports = (connection, ORM)=> {
       type: ORM.INTEGER,
       allowNull: false,
       references: {
-        model: 'user',
+        model: 'meme',
         key: 'id',
       },
     },
     loser: {
+      type: ORM.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'meme',
+        key: 'id',
+      },
+    },
+    voter: {
       type: ORM.INTEGER,
       allowNull: false,
       references: {
